@@ -4,6 +4,7 @@ import auth from './auth';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
 import Redis from 'ioredis';
+import postsRouter from './posts';
 
 const app = express();
 const redisClient = new Redis('127.0.0.1:6379');
@@ -40,6 +41,7 @@ app.use(
 );
 
 app.use('/auth', auth);
+app.use('/posts', postsRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
