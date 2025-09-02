@@ -3,6 +3,7 @@ import express from 'express';
 import db from './db';
 import { users } from './db/schema';
 import { eq } from 'drizzle-orm';
+import authGuard from './utils/auth-guard';
 const auth = express();
 
 auth.get('/login/google', async (req, res) => {
@@ -56,14 +57,19 @@ auth.get('/google/callback', async (req, res) => {
 });
 
 auth.get('/me', async (req, res) => {
-  if (!req.session.userId) {
-    res.json({ user: null }).status(401);
+  authGuard(req, res, async () => {
+    const [user] = await db.select().from(users).where(eq(users.id, req.session.userId!));
+    res.json({ userName: user.name });
     return;
-  }
-  console.log(req.session);
-  const [user] = await db.select().from(users).where(eq(users.id, req.session.userId));
-  res.json({ userName: user.name });
-  return;
+  });
+});
+
+auth.get('/logout', async (req, res) => {
+  req.session.destroy(() => {
+    console.log(req.session);
+    res.json({ msg: 'success' });
+    return;
+  });
 });
 
 export default auth;
