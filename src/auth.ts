@@ -56,12 +56,12 @@ auth.get('/google/callback', async (req, res) => {
   return;
 });
 
+auth.use(authGuard);
+
 auth.get('/me', async (req, res) => {
-  authGuard(req, res, async () => {
-    const [user] = await db.select().from(users).where(eq(users.id, req.session.userId!));
-    res.json({ userName: user.name });
-    return;
-  });
+  const [user] = await db.select().from(users).where(eq(users.id, req.session.userId!));
+  res.json({ userName: user.name });
+  return;
 });
 
 auth.get('/logout', async (req, res) => {
