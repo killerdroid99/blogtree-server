@@ -1,5 +1,5 @@
 import { createId } from '@paralleldrive/cuid2';
-import { pgTable, text, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, integer } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
   id: text()
@@ -17,10 +17,7 @@ export const users = pgTable('users', {
 export type User = typeof users.$inferSelect;
 
 export const posts = pgTable('posts', {
-  id: text()
-    .primaryKey()
-    .notNull()
-    .$defaultFn(() => createId()),
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
   title: text().notNull(),
   content: text().notNull(),
   createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow().notNull(),

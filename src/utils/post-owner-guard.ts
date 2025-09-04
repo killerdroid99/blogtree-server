@@ -22,7 +22,7 @@ const postOwnerGuard = async (req: Request, res: Response, next: NextFunction) =
         res.status(400).json({ msg: 'Missing post id' });
         return;
       }
-      const [post] = await db.select().from(posts).where(eq(posts.id, id));
+      const [post] = await db.select().from(posts).where(eq(posts.id, +id));
       if (!post) {
         res.status(404).json({ msg: 'Post not found' });
         return;
