@@ -5,9 +5,13 @@ import session from 'express-session';
 import connectRedis from 'connect-redis';
 import Redis from 'ioredis';
 import postsRouter from './posts';
+import 'dotenv/config';
 
 const app = express();
-const redisClient = new Redis('127.0.0.1:6379');
+const redisClient = new Redis({
+  host: process.env.REDIS_HOST!,
+  port: parseInt(process.env.REDIS_PORT!)
+});
 
 const redisStore = new connectRedis({
   client: redisClient,
@@ -20,7 +24,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: ['http://localhost:5173', 'https://localhost:3000'],
+    origin: ['http://localhost:5173', 'https://localhost:3000', 'http://localhost:4000'],
     credentials: true
   })
 );
