@@ -52,7 +52,7 @@ auth.get('/google/callback', async (req, res) => {
   req.session.userId = newUser.id;
   console.log(req.session);
 
-  res.json({ msg: 'success' });
+  res.redirect('/');
   return;
 });
 
