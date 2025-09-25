@@ -3,6 +3,7 @@ FROM node:24-alpine AS builder
 WORKDIR /usr/src/app
 
 COPY package*.json ./
+COPY package-lock.json ./
 
 RUN npm ci
 
@@ -17,6 +18,7 @@ WORKDIR /usr/src/app
 
 # Install only production dependencies
 COPY package*.json ./
+COPY package-lock.json ./
 RUN npm ci --omit=dev
 
 # Copy built artifacts from the builder stage
