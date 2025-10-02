@@ -35,7 +35,7 @@ auth.get('/google/callback', async (req, res) => {
     req.session.userId = existingUser.id;
     console.log(req.session);
 
-    res.json({ msg: 'success' });
+    res.redirect(process.env.FRONTEND_URL!);
     return;
   }
   const [newUser] = await db
@@ -52,7 +52,7 @@ auth.get('/google/callback', async (req, res) => {
   req.session.userId = newUser.id;
   console.log(req.session);
 
-  res.redirect('/');
+  res.redirect(process.env.FRONTEND_URL!);
   return;
 });
 
