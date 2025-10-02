@@ -6,9 +6,9 @@ A Node.js/Express server for Blogtree backed by PostgreSQL (Drizzle ORM) and Red
 
 - Node.js (TypeScript)
 - Express
-- Drizzle ORM + `pg`
-- PostgreSQL 15 (official image)
-- Redis (alpine image)
+- Drizzle ORM + `Neon`
+- PostgreSQL
+- Redis
 - Session management via `express-session` + `connect-redis`
 - Build tooling: `pkgroll`
 
@@ -33,13 +33,12 @@ A Node.js/Express server for Blogtree backed by PostgreSQL (Drizzle ORM) and Red
 ## Prerequisites
 
 - Docker and Docker Compose
-- Optional for local (non-docker) dev: Node.js 18+
+- Optional for local (non-docker) dev: Node.js 20+
 
 ## Environment Configuration
 
-This project supports per-service environment files for clarity and least-privilege. You can start with a single `.env` if you prefer, or use the recommended service-specific files below.
-
-### Option A: Single .env (simple)
+This project supports per-service environment files for clarity and least-privilege.
+You can start with a single `.env` if you prefer, or use the recommended service-specific files below. `example-env.txt` can be used for reference.
 
 Create a `.env` in the project root and point `docker-compose.yml` services to it via `env_file: - .env`.
 
@@ -61,41 +60,8 @@ REDIS_PORT=6379
 POSTGRES_USER=root
 POSTGRES_PASSWORD=mysecretpassword
 POSTGRES_DB=local
-```
 
-### Option B: Service-specific env files (recommended)
-
-Update `docker-compose.yml` to use these:
-
-- App env file: `.env.app`
-- Postgres env file: `.env.db`
-- Redis usually does not require env unless you enable auth.
-
-`.env.app`:
-
-```
-COOKIE_SECRET=change-me
-GOOGLE_CLIENT_ID=your-client-id
-GOOGLE_CLIENT_SECRET=your-client-secret
-REDIRECT_URI=http://localhost:3000/auth/google/callback
-DATABASE_URL=postgres://root:mysecretpassword@postgres:5432/local
-REDIS_HOST=redis
-REDIS_PORT=6379
-```
-
-`.env.db`:
-
-```
-POSTGRES_USER=root
-POSTGRES_PASSWORD=mysecretpassword
-POSTGRES_DB=local
-```
-
-Add these patterns to `.gitignore` to avoid committing secrets:
-
-```
-.env
-.env.*
+FRONTEND_URL=frontend-site-url
 ```
 
 ## Running with Docker Compose
