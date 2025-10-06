@@ -28,12 +28,11 @@ auth.get('/google/callback', async (req, res) => {
 
   const fetchUser = await fetch(`https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${data.id_token}`);
 
-  const user = (await fetchUser.json()) as { email: string; name: string; picture: string; sub: string };
+  const user = (await fetchUser.json()) as { email: string; name: string; picture?: string; sub: string };
 
   let [existingUser] = await db.select().from(users).where(eq(users.email, user.email));
   if (existingUser) {
     req.session.userId = existingUser.id;
-    console.log(req.session);
 
     res.redirect(process.env.FRONTEND_URL!);
     return;
@@ -60,11 +59,11 @@ auth.use(authGuard);
 
 auth.get('/me', async (req, res) => {
   const [user] = await db.select().from(users).where(eq(users.id, req.session.userId!));
-  res.json({ userName: user.name });
+  res.json({ userName: user.name, pfp: user.picture });
   return;
 });
 
-auth.get('/logout', async (req, res) => {
+auth.delete('/logout', async (req, res) => {
   req.session.destroy(() => {
     console.log(req.session);
     res.json({ msg: 'success' });

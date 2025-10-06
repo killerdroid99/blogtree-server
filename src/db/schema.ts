@@ -11,7 +11,7 @@ export const users = pgTable('users', {
   provider: text().notNull(),
   providerAccountId: text('provider_account_id').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
-  picture: text().notNull()
+  picture: text()
 });
 
 export type User = typeof users.$inferSelect;
