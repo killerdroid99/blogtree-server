@@ -11,8 +11,14 @@ const postsRouter = express();
 
 // post routes that don't require auth and ownership
 postsRouter.get('/', async (req, res) => {
-  const { pageSize = 2, cursor } = req.query;
+  let { pageSize = 2, cursor } = req.query;
 
+  console.log(cursor);
+
+  let cursorNum;
+  if (cursor && !isNaN(+cursor)) {
+    cursorNum = +cursor;
+  }
   const allPosts = await db
     .select({
       id: posts.id,
@@ -24,7 +30,7 @@ postsRouter.get('/', async (req, res) => {
       authorPicture: users.picture
     })
     .from(posts)
-    .where(cursor ? lt(posts.id, +cursor) : undefined)
+    .where(cursorNum ? lt(posts.id, cursorNum) : undefined)
     .innerJoin(users, eq(posts.userId, users.id))
     .limit(+pageSize)
     .orderBy(desc(posts.id));
