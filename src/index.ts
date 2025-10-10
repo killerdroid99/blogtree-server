@@ -35,7 +35,7 @@ app.use(
 );
 app.use(
   session({
-    secret: 'secret',
+    secret: process.env.SESSION_SECRET!,
     resave: false,
     name: 'blogtree-auth',
     saveUninitialized: false,
