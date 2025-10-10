@@ -71,14 +71,17 @@ postsRouter.use(postOwnerGuard);
 postsRouter.post('/', async (req, res) => {
   const { data, success, error } = postSchema.safeParse(req.body);
   if (!success) {
-    return res.status(400).json({ msg: z.flattenError(error).fieldErrors });
+    return res.status(400).json({ msg: 'failed', errors: z.flattenError(error).fieldErrors });
   }
-  await db.insert(posts).values({ ...data, userId: req.session.userId! });
-  res.status(201).json({ msg: 'success' });
+  const [post] = await db
+    .insert(posts)
+    .values({ ...data, userId: req.session.userId! })
+    .returning();
+  res.status(201).json({ msg: 'success', postId: post.id });
   return;
 });
 
-postsRouter.put('/:id', async (req, res) => {
+postsRouter.patch('/:id', async (req, res) => {
   const { id } = req.params;
 
   const { data, success, error } = postSchema.safeParse(req.body);
